@@ -1,9 +1,10 @@
 const express = require("express");
 const fs = require("fs");
-const cors = require("cors");
 
 const app = express();
 const port = 3000;
+
+app.use(express.json());
 
 function deleteFile(file) {
   fs.unlink(file, (err) => {
@@ -16,7 +17,7 @@ function deleteFile(file) {
 }
 
 function writeFile(file, addedData) {
-  fs.writeFile(file, `${addedData}`, (err) => {
+  fs.writeFile(file, addedData, (err) => {
     if (err) {
       console.log("error:", err);
       return;
@@ -48,37 +49,24 @@ function readFile(file, send) {
 
 app.get("/user", (req, res) => {
   readFile("user.txt", (data) => {
-    res.send(data);
+    res.send(JSON.stringify(data));
   });
 });
 
 app.put("/user", (req, res) => {
-  writeFile("user.txt", req.body);
-  res.send("Se agregaron los datos a user.txt");
+  writeFile("user.txt", JSON.stringify(req.body));
+  res.send(JSON.stringify("Se agregaron los datos a user.txt"));
 });
 
 app.delete("/user", (req, res) => {
   deleteFile("user.txt");
-  res.send("Archivo user eliminado");
+  res.send(JSON.stringify("Archivo user eliminado"));
 });
 
 app.post("/user", (req, res) => {
-  appendFile("user.txt", req.body);
-  res.send("Se agregaron los datos");
+  appendFile("user.txt", JSON.stringify(req.body));
+  res.send(JSON.stringify("Se agregaron los datos"));
 });
-
-// const corsOptions = {
-//   origin: ["http://localhost:5500", "http://127.0.0.1:5500"],
-//   methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-//   allowedHeaders: ["Content-Type", "Authorization"],
-// };
-// app.use(cors(corsOptions));
-// app.use((req, res) => {
-//   res.status(404).json({
-//     error: "Ruta no encontrada",
-//     status: 404,
-//   });
-// });
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

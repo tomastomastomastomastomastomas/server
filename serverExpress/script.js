@@ -28,3 +28,8 @@ async function deleteFile(path) {
   });
   return response.json();
 }
+
+get("user").then((data) => console.log(data));
+put("user", { user: "bobo" }).then((data) => console.log(data));
+post("user", { user: "wawa" }).then((data) => console.log(data));
+deleteFile("user").then((data) => console.log(data));
